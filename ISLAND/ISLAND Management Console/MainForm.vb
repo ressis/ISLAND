@@ -47,4 +47,15 @@
 			RefreshBrowserList()
 		End If
 	End Sub
+
+	Private Sub ManageBrowser_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ManageBrowser.Click
+		If BrowserList.SelectedItem Is Nothing Then
+			Return
+		End If
+
+		Dim urlManagerWindow As New URLManager(BrowserList.SelectedItem)
+		If Not urlManagerWindow.IsDisposed Then
+			urlManagerWindow.Show()
+		End If
+	End Sub
 End Class

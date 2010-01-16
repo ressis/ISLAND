@@ -127,6 +127,12 @@
     </Compile>
     <Compile Include="RegistryHelpers.vb" />
     <Compile Include="URL.vb" />
+    <Compile Include="URLManager.Designer.vb">
+      <DependentUpon>URLManager.vb</DependentUpon>
+    </Compile>
+    <Compile Include="URLManager.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AddBrowser.resx">
@@ -141,6 +147,10 @@
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="URLManager.resx">
+      <DependentUpon>URLManager.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

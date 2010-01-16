@@ -79,7 +79,11 @@
 		Return x.Equals(y)
 	End Function
 
-	Public Function GetHashCode1(ByVal obj As Browser) As Integer Implements System.Collections.Generic.IEqualityComparer(Of Browser).GetHashCode
+	Public Overloads Function GetHashCode(ByVal obj As Browser) As Integer Implements System.Collections.Generic.IEqualityComparer(Of Browser).GetHashCode
+		Return (obj.FriendlyName + obj.CommandString).GetHashCode
+	End Function
+
+	Public Overrides Function GetHashCode() As Integer
 		Return (FriendlyName + CommandString).GetHashCode
 	End Function
 End Class

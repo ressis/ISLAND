@@ -127,7 +127,7 @@
 
 		Dim selectURLs As System.Data.SQLite.SQLiteCommand = Connection.CreateCommand
 
-		selectURLs.CommandText = "SELECT * FROM urls WHERE browser_id = @browser"
+		selectURLs.CommandText = "SELECT * FROM urls WHERE browser = @browser"
 		selectURLs.Parameters.AddWithValue("@browser", id)
 
 		Dim reader As System.Data.SQLite.SQLiteDataReader = selectURLs.ExecuteReader
@@ -151,5 +151,22 @@
 		End While
 		reader.Close()
 		Return list
+	End Function
+
+	Public Shared Function DoesBrowserExist(ByVal browserObj As Browser)
+		Return DoesBrowserExist(browserObj.DB_ID)
+	End Function
+
+	Public Shared Function DoesBrowserExist(ByVal id As Nullable(Of Int64))
+		If id Is Nothing Then
+			Return False
+		End If
+
+		Dim sql As System.Data.SQLite.SQLiteCommand = Connection.CreateCommand
+
+		sql.CommandText = "SELECT * FROM browsers WHERE id = @id"
+		sql.Parameters.AddWithValue("@id", id)
+
+		Return sql.ExecuteScalar IsNot Nothing
 	End Function
 End Class

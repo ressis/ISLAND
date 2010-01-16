@@ -112,7 +112,6 @@ Partial Class MainForm
 		Me.MainMenuStrip = Me.MainMenu
 		Me.MaximizeBox = False
 		Me.Name = "MainForm"
-		Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
 		Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
 		Me.Text = "ISLAND Management Console"
 		Me.MainMenu.ResumeLayout(False)
