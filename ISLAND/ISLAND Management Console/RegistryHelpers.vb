@@ -29,7 +29,7 @@
 			browsers.Add(New Browser(name, command))
 		Next
 
-		'TODO: Strip Duplicates
+		'I'm fairly certain that there won't be any duplicates because of: http://msdn.microsoft.com/en-us/library/dd203067(VS.85).aspx
 		Return browsers
 	End Function
 
