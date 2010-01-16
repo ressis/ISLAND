@@ -9,10 +9,10 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("ISLAND Management Console")> 
-<Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("Microsoft")> 
+<Assembly: AssemblyDescription("The console to manage URLs")> 
+<Assembly: AssemblyCompany("Evan Larkin")> 
 <Assembly: AssemblyProduct("ISLAND Management Console")> 
-<Assembly: AssemblyCopyright("Copyright © Microsoft 2010")> 
+<Assembly: AssemblyCopyright("Copyright © Evan Larkin 2010")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.0.0.0")> 
-<Assembly: AssemblyFileVersion("1.0.0.0")> 
+<Assembly: AssemblyVersion("0.0.1.0")> 
+<Assembly: AssemblyFileVersion("0.0.1.0")> 
