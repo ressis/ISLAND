@@ -33,7 +33,7 @@
 
 	Public Shared Sub Validate_Database()
 		Try
-			Initialize_Database(Connection)
+			Initialize_Database()
 		Finally
 			If Connection.State = ConnectionState.Open Then
 				Connection.Close()
@@ -41,31 +41,37 @@
 		End Try
 	End Sub
 
-	Private Shared Sub Initialize_Database(ByVal conn As System.Data.SQLite.SQLiteConnection)
+	Private Shared Sub Initialize_Database()
 		If Not newDB Then
 			Return
 		End If
-		Dim connectionState As ConnectionState = conn.State
 
-		Dim browserTable As System.Data.SQLite.SQLiteCommand = conn.CreateCommand
-		Dim urlTable As System.Data.SQLite.SQLiteCommand = conn.CreateCommand
-
-		browserTable.CommandText = "CREATE TABLE IF NOT EXISTS browsers (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, command TEXT);"
-		urlTable.CommandText = "CREATE TABLE IF NOT EXISTS urls (id INTEGER PRIMARY KEY AUTOINCREMENT, urlPattern TEXT, browser INTEGER CONSTRAINT browser_id_fkey REFERENCES browsers (id) ON DELETE CASCADE);"
-
-		If connectionState = Data.ConnectionState.Closed Then
-			conn.Open()
+		If Connection.State = ConnectionState.Closed Then
+			Connection.Open()
 		End If
+
+		Dim browserTable As System.Data.SQLite.SQLiteCommand = connection.CreateCommand
+		Dim urlTable As System.Data.SQLite.SQLiteCommand = connection.CreateCommand
+
+		browserTable.CommandText = "CREATE TABLE IF NOT EXISTS browsers (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, command TEXT, isDefault INTEGER);"
+		urlTable.CommandText = "CREATE TABLE IF NOT EXISTS urls (id INTEGER PRIMARY KEY AUTOINCREMENT, urlPattern TEXT, browser INTEGER CONSTRAINT browser_id_fkey REFERENCES browsers (id) ON DELETE CASCADE);"
 
 		browserTable.ExecuteNonQuery()
 		urlTable.ExecuteNonQuery()
+	End Sub
 
-		If connectionState = Data.ConnectionState.Closed Then
-			conn.Close()
+	Public Shared Function Add_Browser(ByVal newBrowser As Browser) As Boolean
+		If Connection.State = ConnectionState.Closed Then
+			Connection.Open()
 		End If
-	End Sub
 
-	Private Shared Sub Discover_Browsers()
+		Dim insertBrowser As System.Data.SQLite.SQLiteCommand = Connection.CreateCommand
 
-	End Sub
+		insertBrowser.CommandText = "INSERT INTO browsers (name,command,isDefault) VALUES (@name,@command,@default);"
+		insertBrowser.Parameters.AddWithValue("@name", newBrowser.FriendlyName)
+		insertBrowser.Parameters.AddWithValue("@command", newBrowser.CommandString)
+		insertBrowser.Parameters.AddWithValue("@default", newBrowser.isDefault)
+
+		Return insertBrowser.ExecuteNonQuery() > 0
+	End Function
 End Class
