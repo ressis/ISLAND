@@ -94,6 +94,7 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Browser.vb" />
     <Compile Include="DatabaseHelpers.vb" />
     <Compile Include="MainForm.vb">
       <SubType>Form</SubType>
