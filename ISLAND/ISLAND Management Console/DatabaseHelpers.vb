@@ -98,6 +98,42 @@
 		While reader.Read
 			list.Add(New Browser(reader("name"), reader("command"), reader("id"), reader("isDefault")))
 		End While
+		reader.Close()
+		Return list
+	End Function
+
+	Public Shared Function GetListOfURLPatternsByBrowser(ByVal browserObj As Browser)
+		Return GetListOfURLPatternsByBrowserID(browserObj.DB_ID)
+	End Function
+
+	Public Shared Function GetListOfURLPatternsByBrowserID(ByVal id As Int64) As List(Of URL)
+		Dim list As New List(Of URL)
+
+		Dim selectURLs As System.Data.SQLite.SQLiteCommand = Connection.CreateCommand
+
+		selectURLs.CommandText = "SELECT * FROM urls WHERE browser_id = @browser"
+		selectURLs.Parameters.AddWithValue("@browser", id)
+
+		Dim reader As System.Data.SQLite.SQLiteDataReader = selectURLs.ExecuteReader
+		While reader.Read
+			list.Add(New URL(reader("browser"), reader("urlPattern"), reader("id")))
+		End While
+		reader.Close()
+		Return list
+	End Function
+
+	Public Shared Function GetListOfURLPatterns() As List(Of URL)
+		Dim list As New List(Of URL)
+
+		Dim selectURLs As System.Data.SQLite.SQLiteCommand = Connection.CreateCommand
+
+		selectURLs.CommandText = "SELECT * FROM urls"
+
+		Dim reader As System.Data.SQLite.SQLiteDataReader = selectURLs.ExecuteReader
+		While reader.Read
+			list.Add(New URL(reader("browser"), reader("urlPattern"), reader("id")))
+		End While
+		reader.Close()
 		Return list
 	End Function
 End Class

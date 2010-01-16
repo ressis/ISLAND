@@ -37,6 +37,7 @@
 		'TODO: Figure out how to get the Launcher's path here.
 		'... might as well use the registry!
 		Microsoft.Win32.Registry.SetValue("HKEY_CLASSES_ROOT\http\shell\open\command", "", String.Format("""{0}"" ""%1""", System.Reflection.Assembly.GetExecutingAssembly.Location))
-		Microsoft.Win32.Registry.SetValue("HKEY_CLASSES_ROOT\https\shell\open\command", "", String.Format("""{0}"" ""%1""", System.Reflection.Assembly.GetExecutingAssembly.Location))
+		'Don't do https until testing is complete
+		'Microsoft.Win32.Registry.SetValue("HKEY_CLASSES_ROOT\https\shell\open\command", "", String.Format("""{0}"" ""%1""", System.Reflection.Assembly.GetExecutingAssembly.Location))
 	End Sub
 End Class
