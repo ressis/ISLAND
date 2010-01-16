@@ -1,4 +1,5 @@
 ﻿Public Class Browser
+	Implements System.Collections.Generic.IEqualityComparer(Of Browser)
 	Private id As Nullable(Of Int64) = Nothing
 	Private name As String = Nothing
 	Private command As String = Nothing
@@ -45,12 +46,16 @@
 			id = _id
 		End If
 		name = _name
-		command = """" + _command.Trim(""""c) + """"	' necessary because IE does not quote itself while others do
 		is_default = _default
 
 		'%1 will be replaced by the URL.
-		If Not command.IndexOf("%1") > 0 Then
-			command = command + " ""%1"""
+		If Not _command.IndexOf("%1") > 0 Then
+			command = """" + _command.Trim(""""c) + """ ""%1"""
+			' necessary because IE does not quote itself while others do
+			'also ensure that all commands have a %1 to replace.
+		Else
+			'if a %1 is present, take the command at face value
+			command = _command
 		End If
 	End Sub
 
@@ -64,5 +69,17 @@
 		Else
 			Return False
 		End If
+	End Function
+
+	Public Overrides Function toString() As String
+		Return FriendlyName
+	End Function
+
+	Public Function AreEqual(ByVal x As Browser, ByVal y As Browser) As Boolean Implements System.Collections.Generic.IEqualityComparer(Of Browser).Equals
+		Return x.Equals(y)
+	End Function
+
+	Public Function GetHashCode1(ByVal obj As Browser) As Integer Implements System.Collections.Generic.IEqualityComparer(Of Browser).GetHashCode
+		Return (FriendlyName + CommandString).GetHashCode
 	End Function
 End Class

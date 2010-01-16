@@ -76,6 +76,22 @@
 		Return insertBrowser.ExecuteNonQuery() > 0
 	End Function
 
+	Public Shared Function DeleteBrowser(ByVal browserToDelete As Browser) As Boolean
+		If browserToDelete.DB_ID Is Nothing Then
+			Return False
+		End If
+
+		Dim deleteBrowserSQL As System.Data.SQLite.SQLiteCommand = Connection.CreateCommand
+		Dim deleteUrlsForBrowser As System.Data.SQLite.SQLiteCommand = Connection.CreateCommand
+
+		deleteUrlsForBrowser.CommandText = "DELETE FROM urls WHERE browser=@id"
+		deleteBrowserSQL.CommandText = "DELETE FROM browsers WHERE id=@id"
+		deleteBrowserSQL.Parameters.AddWithValue("@id", browserToDelete.DB_ID)
+		deleteUrlsForBrowser.Parameters.AddWithValue("@id", browserToDelete.DB_ID)
+
+		Return (deleteBrowserSQL.ExecuteNonQuery > 0) AndAlso (deleteUrlsForBrowser.ExecuteNonQuery >= 0)
+	End Function
+
 	Public Shared Function SetDefaultBrowser(ByVal browserID As Int64) As Boolean
 		Dim setDefault As System.Data.SQLite.SQLiteCommand = Connection.CreateCommand
 
