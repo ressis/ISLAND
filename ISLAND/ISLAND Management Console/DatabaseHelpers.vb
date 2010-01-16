@@ -29,6 +29,9 @@
 			If conn Is Nothing Then
 				conn = New System.Data.SQLite.SQLiteConnection(ConnectionString)
 			End If
+			If conn.State = ConnectionState.Closed Then
+				conn.Open()
+			End If
 			Return conn
 		End Get
 	End Property
@@ -37,7 +40,6 @@
 		If Not System.IO.File.Exists(DBFileLocation) Then
 			System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(DBFileLocation))
 			System.Data.SQLite.SQLiteConnection.CreateFile(DBFileLocation)
-		Else
 			Try
 				Initialize_Database()
 			Finally
@@ -49,10 +51,6 @@
 	End Sub
 
 	Private Shared Sub Initialize_Database()
-		If Connection.State = ConnectionState.Closed Then
-			Connection.Open()
-		End If
-
 		Dim browserTable As System.Data.SQLite.SQLiteCommand = Connection.CreateCommand
 		Dim urlTable As System.Data.SQLite.SQLiteCommand = Connection.CreateCommand
 
@@ -63,15 +61,11 @@
 		urlTable.ExecuteNonQuery()
 
 		For Each newBrowser As Browser In RegistryHelpers.GetInstalledBrowsersFromRegistry
-			Add_Browser(newBrowser)
+			AddBrowser(newBrowser)
 		Next
 	End Sub
 
-	Public Shared Function Add_Browser(ByVal newBrowser As Browser) As Boolean
-		If Connection.State = ConnectionState.Closed Then
-			Connection.Open()
-		End If
-
+	Public Shared Function AddBrowser(ByVal newBrowser As Browser) As Boolean
 		Dim insertBrowser As System.Data.SQLite.SQLiteCommand = Connection.CreateCommand
 
 		insertBrowser.CommandText = "INSERT INTO browsers (name,command,isDefault) VALUES (@name,@command,@default);"
@@ -80,5 +74,30 @@
 		insertBrowser.Parameters.AddWithValue("@default", newBrowser.isDefault)
 
 		Return insertBrowser.ExecuteNonQuery() > 0
+	End Function
+
+	Public Shared Function SetDefaultBrowser(ByVal browserID As Int64) As Boolean
+		Dim setDefault As System.Data.SQLite.SQLiteCommand = Connection.CreateCommand
+
+		setDefault.CommandText = "UPDATE browsers SET isDefault = CASE WHEN (id = @id) THEN @true ELSE @false END"
+		setDefault.Parameters.AddWithValue("@id", browserID)
+		setDefault.Parameters.AddWithValue("@true", True)
+		setDefault.Parameters.AddWithValue("@false", False)
+
+		Return setDefault.ExecuteNonQuery > 0
+	End Function
+
+	Public Shared Function GetInstalledBrowsersFromDatabase() As List(Of Browser)
+		Dim list As New List(Of Browser)
+
+		Dim selectBrowsers As System.Data.SQLite.SQLiteCommand = Connection.CreateCommand
+
+		selectBrowsers.CommandText = "SELECT * FROM browsers"
+
+		Dim reader As System.Data.SQLite.SQLiteDataReader = selectBrowsers.ExecuteReader
+		While reader.Read
+			list.Add(New Browser(reader("name"), reader("command"), reader("id"), reader("isDefault")))
+		End While
+		Return list
 	End Function
 End Class
